@@ -1,54 +1,73 @@
 <?php
-// ヘッダーを設定して、JSON形式で応答することを伝える
+// --- ▼▼▼ 設定項目 ▼▼▼ ---
+
+// 1. Googleから取得した「シークレットキー」をここに貼り付ける
+$secret_key = '6LcBOqwrAAAAAJvu92FyIrUFLHxfVfCeQA8v8Pyw';
+
+// 2. 認証成功後に移動させたいページのURLを指定する
+$next_page_url = 'https://kamakiri-server.f5.si/server-web/index.html';
+
+// --- ▲▲▲ 設定はここまで ▲▲▲ ---
+
+
+// --- ▼▼▼ これより下は原則変更不要 ▼▼▼ ---
+
+// サーバーからの返事をJSON形式にすると宣言
 header('Content-Type: application/json');
 
-// --- 設定項目 ---
-// ステップ1で取得した「シークレットキー」をここに設定する
-$secret_key = '6LfZOawrAAAAAJXEs4Hq522LZ_vK9LWBGkkTzISk';
-// ----------------
+// POSTリクエスト以外は処理を中断
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit;
+}
 
-// フロントエンドから送られてきたトークンを取得
-// 実際にはPOSTリクエストで受け取るのが一般的
-// $token = $_POST['token']; 
-// このデモでは仮のトークンを使います（実際にはフロントから受け取ってください）
-$token = '（フロントエンドから送られてきたトークン）'; // この行は実際の実装では削除
+// フロントエンドから'token'が送られてきていない場合は処理を中断
+if (!isset($_POST['token'])) {
+    echo json_encode(['success' => false, 'message' => 'reCAPTCHA token not found.']);
+    exit;
+}
 
-// GoogleのAPIに検証をリクエスト
+$token = $_POST['token'];
+
+// GoogleのAPIに問い合わせるための準備
 $url = 'https://www.google.com/recaptcha/api/siteverify';
-$data = array(
+$data = [
     'secret'   => $secret_key,
     'response' => $token,
     'remoteip' => $_SERVER['REMOTE_ADDR'] // ユーザーのIPアドレス
-);
+];
 
-$options = array(
-    'http' => array(
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+$options = [
+    'http' => [
+        'header'  => "Content-Type: application/x-www-form-urlencoded\r\n",
         'method'  => 'POST',
         'content' => http_build_query($data)
-    )
-);
-
+    ]
+];
 $context  = stream_context_create($options);
+// GoogleのAPIにリクエストを送信し、結果を受け取る
 $response_json = file_get_contents($url, false, $context);
 
-// Googleからの応答をデコード
-$result = json_decode($response_json);
-
-// 結果をフロントエンドに返す
-if ($result->success) {
-    // 成功した場合
-    // スコアがしきい値（例: 0.5）以上かを確認
-    if ($result->score >= 0.5) {
-        // 人間らしいと判定
-        echo json_encode(['status' => 'success', 'message' => '認証成功！あなたは人間です。', 'score' => $result->score]);
-    } else {
-        // ボットの可能性が高いと判定
-        echo json_encode(['status' => 'failure', 'message' => 'ボットの可能性があります。', 'score' => $result->score]);
-    }
-} else {
-    // 認証自体に失敗した場合 (トークンが不正など)
-    echo json_encode(['status' => 'error', 'message' => 'reCAPTCHAの認証に失敗しました。', 'errors' => $result->{'error-codes'}]);
+if ($response_json === false) {
+    echo json_encode(['success' => false, 'message' => 'Failed to communicate with Google reCAPTCHA server.']);
+    exit;
 }
 
+// 受け取ったJSON形式の結果をPHPで扱えるように変換
+$result = json_decode($response_json);
+
+// 結果を判断して、フロントエンドに返す情報を組み立てる
+if ($result->success) {
+    // reCAPTCHAの認証に成功した場合
+    echo json_encode([
+        'success' => true, 
+        'redirectUrl' => https://kamakiri-server.f5.si/server-web/index.html // 成功したので、移動先のURLを伝える
+    ]);
+} else {
+    // reCAPTCHAの認証に失敗した場合
+    echo json_encode([
+        'success' => false, 
+        'message' => 'reCAPTCHA verification failed.'
+    ]);
+}
 ?>
