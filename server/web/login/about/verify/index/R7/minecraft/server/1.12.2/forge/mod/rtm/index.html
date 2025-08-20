@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【かまきりの爪】 - Minecraftサーバー</title>
+    <style>
+        /* CSS (ウェブサイトのデザイン部分) */
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, sans-serif;
+            line-height: 1.8;
+            background-color: #36393F; /* Discord風のダークグレー */
+            color: #DCDDDE;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 2px solid #2f3136;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            color: #FFFFFF;
+            letter-spacing: 2px;
+        }
+        header p {
+            font-size: 1.2em;
+            color: #B9BBBE;
+        }
+        nav {
+            background-color: #2f3136;
+            padding: 10px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #7289DA; /* Discord風のブルー */
+        }
+        section {
+            padding: 40px 20px;
+            margin-bottom: 20px;
+            background-color: #2f3136;
+            border-radius: 8px;
+        }
+        h2 {
+            font-size: 2em;
+            color: #FFFFFF;
+            border-left: 5px solid #7289DA;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        .server-info {
+            text-align: center;
+            background-color: #202225;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .server-info .ip-address {
+            background-color: #2f3136;
+            padding: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFFFFF;
+            border-radius: 5px;
+            display: inline-block;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #7289DA;
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #677bc4;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            border: 2px solid #36393F;
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 40px;
+            border-top: 1px solid #2f3136;
+            color: #B9BBBE;
+        }
+
+        /* スマートフォン対応 */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2em;
+            }
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- ↓↓↓ サーバー名と簡単な説明を編集 ↓↓↓ -->
+        <h1>かまきりの爪サーバー</h1>
+        <p>RTMのサーバーです</p>
+        <!-- ↑↑↑ サーバー名と簡単な説明を編集 ↑↑↑ -->
+    </header>
+
+    <nav>
+        <a href="#about">サーバー紹介</a>
+        <a href="#rules">ルール</a>
+        <a href="#gallery">ギャラリー</a>
+        <a href="#join">参加方法</a>
+        <a href="#news">お知らせ</a>
+    </nav>
+
+    <div class="container">
+
+        <section id="server-address" class="server-info">
+            <h2>サーバーに参加しよう！</h2>
+            <p>以下の情報を入力してサーバーに参加できます。</p>
+            
+            <!-- ↓↓↓ サーバーアドレスとバージョンを編集 ↓↓↓ -->
+            <p>サーバーアドレス (クリックでコピー):</p>
+            <div class="ip-address" onclick="copyToClipboard('a-minecraft.ddo.jp')">a-minecraft.ddo.jp</div>
+            <p>対応バージョン: Java版 1.12.2</p>
+            <!-- ↑↑↑ サーバーアドレスとバージョンを編集 ↑↑↑ -->
+            
+            <br>
+            
+            <!-- ↓↓↓ Discord招待リンクを編集 ↓↓↓ -->
+            <a href="https://discord.gg/7PGsXqcBwF" target="_blank" class="btn">Discordに参加する</a>
+            <!-- ↑↑↑ Discord招待リンクを編集 ↑↑↑ -->
+        </section>
+
+        <section id="about">
+            <h2>サーバー紹介</h2>
+            <!-- ↓↓↓ サーバーの詳しい説明を編集 ↓↓↓ -->
+            <p>
+                「かまきりの爪サーバー」へようこそ！このサーバーは、RTMのサーバーです
+                仲間と協力して巨大建築に挑戦するもよし、一人で建築するのもよし、のんびり暮らすもよし。
+                あなただけのマイクラライフをここで見つけてください！
+            </p>
+            <ul>
+                <li><strong>サーバーのジャンル:</strong> RTM・クリエイティブ</li>
+                <li><strong>主な特徴:</strong>
+                    <ul>
+                        <li>24時間365日稼働</li>
+                        <li>独自の経済システムでプレイヤー間取引が活発</li>
+                        <li>初心者サポートが手厚い</li>
+                        <li>定期的なイベント開催 (建築コンテストなど)</li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- ↑↑↑ サーバーの詳しい説明を編集 ↑↑↑ -->
+        </section>
+
+        <section id="rules">
+            <h2>サーバーのルール</h2>
+            <!-- ↓↓↓ サーバーのルールを編集 ↓↓↓ -->
+            <p>みんなが気持ちよく遊ぶために、以下のルールを守ってください。</p>
+            <ol>
+                <li><strong>荒らし・窃盗の禁止:</strong> 他のプレイヤーの建築物やアイテムを許可なく破壊・窃盗する行為は厳禁です。</li>
+                <li><strong>チート・不正ツールの使用禁止:</strong> X-Rayや自動化MODなど、ゲームを有利に進める不正なツールの使用は禁止します。</li>
+                <li><strong>暴言・迷惑行為の禁止:</strong> チャットやVCでの暴言、他人を不快にさせる言動はやめましょう。</li>
+                <li><strong>過度な負荷をかける行為の禁止:</strong> サーバーに負荷をかけるような大規模な回路や装置を作る際は、事前に運営に相談してください。</li>
+                <li><strong>その他:</strong> 運営の指示には必ず従ってください。ルールは予告なく変更される場合があります。</li>
+            </ol>
+            <!-- ↑↑↑ サーバーのルールを編集 ↑↑↑ -->
+        </section>
+
+        <section id="gallery">
+            <h2>ギャラリー</h2>
+            <p>【開発中】サーバー内の風景やみんなの作品です！</p>
+            <div class="gallery">
+                <!-- ↓↓↓ 画像ファイル名や説明を編集。画像はindex.htmlと同じフォルダに置いてください ↓↓↓ -->
+                <img src="image1.jpg" alt="サーバーのスポーン地点">
+                <img src="image2.jpg" alt="プレイヤーが建てたお城">
+                <img src="image3.jpg" alt="みんなでイベントを楽しんでいる様子">
+                <img src="image4.jpg" alt="美しい自然の風景">
+                <img src="image5.jpg" alt="商店街の様子">
+                <img src="image6.jpg" alt="夜の街並み">
+                <!-- ↑↑↑ 画像ファイル名や説明を編集 ↑↑↑ -->
+            </div>
+        </section>
+
+        <section id="join">
+            <h2>参加方法</h2>
+            <!-- ↓↓↓ 参加方法を編集 ↓↓↓ -->
+            <ol>
+                <li>Minecraftを起動し、「マルチプレイ」を選択します。</li>
+                <li>「サーバーを追加」をクリックします。</li>
+                <li>サーバー名に分かりやすい名前（例：かまきりの爪サーバー）、サーバーアドレスに「<strong>a-minecraft.ddo.jp</strong>」を入力します。</li>
+                <li>「完了」を押し、サーバーリストから追加したサーバーを選択して「サーバーに接続」をクリックします。</li>
+                <li>ようこそ！サーバーロビーに接続されます。冒険を始めましょう！</li>
+            </ol>
+            <!-- ↑↑↑ 参加方法を編集 ↑↑↑ -->
+        </section>
+
+        <section id="news">
+            <h2>お知らせ</h2>
+            <!-- ↓↓↓ お知らせ内容を編集 ↓↓↓ -->
+            <p><strong>2025/08/20:</strong> ウェブサイトを公開しました！</p>
+            <p><strong>2025/08/15:</strong> 夏祭りイベントを開催しました。たくさんのご参加ありがとうございました！</p>
+            <!-- ↑↑↑ お知らせ内容を編集 ↑↑↑ -->
+        </section>
+
+    </div>
+
+    <footer>
+        <!-- ↓↓↓ サーバー名を編集 ↓↓↓ -->
+        <p>&copy; 2025 kamakirinotume. All Rights Reserved.</p>
+        <!-- ↑↑↑ サーバー名を編集 ↑↑↑ -->
+    </footer>
+
+    <script>
+        // クリップボードにテキストをコピーする機能
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('サーバーアドレスをコピーしました！');
+            }, function(err) {
+                alert('コピーに失敗しました。');
+            });
+        }
+    </script>
+
+</body>
+</html>
