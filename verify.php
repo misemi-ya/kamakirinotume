@@ -5,7 +5,7 @@
 $secret_key = '6LcBOqwrAAAAAJvu92FyIrUFLHxfVfCeQA8v8Pyw';
 
 // 2. 認証成功後に移動させたいページのURLを指定する
-$next_page_url = 'https://kamakiri-server.f5.si/server-web/index.html';
+$next_page_url = 'https://kamakiri-server.f5.si/server/web/login/about/verify/index/R7/minecraft/server/1.12.2/forge/mod/rtm/index.html';
 
 // --- ▲▲▲ 設定はここまで ▲▲▲ ---
 
@@ -71,3 +71,4 @@ if ($result->success) {
     ]);
 }
 ?>
+
