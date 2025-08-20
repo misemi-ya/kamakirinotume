@@ -4,105 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>認証ページ</title>
-    
-    <!-- Google reCAPTCHAのスクリプトを読み込む -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    
     <style>
-        /* ページの見た目を整えるCSS (変更なし) */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f2f5;
-        }
-        .auth-box {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-        h1 {
-            font-size: 1.8em;
-            color: #1c1e21;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        /* reCAPTCHAウィジェットを中央に配置するためのコンテナ */
-        .recaptcha-container {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-        }
-        #submit-button {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #ffffff;
-            background-color: #1877f2;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s, opacity 0.3s;
-        }
-        #submit-button:disabled {
-            background-color: #a0a0a0;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
+        /* CSSは以前のものと同じなので省略 */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
+        .auth-box { background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; width: 90%; max-width: 400px; }
+        h1 { font-size: 1.8em; color: #1c1e21; margin-top: 0; margin-bottom: 20px; }
+        .recaptcha-container { display: flex; justify-content: center; margin: 30px 0; }
+        #message { margin-top: 20px; font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-
     <div class="auth-box">
         <h1>続行するには認証してください</h1>
         
         <div class="recaptcha-container">
-            <!-- ▼▼▼ 元のチェックボックスの代わりにreCAPTCHAウィジェットを配置 ▼▼▼ -->
-            <!-- 【あなたのサイトキー】の部分を、ステップ1で取得したサイトキーに書き換えてください -->
-            <div class="g-recaptcha" 
+            <!-- 【あなたのサイトキー】の部分を、ご自身のサイトキーに書き換えてください -->
+            <div class="g-recaptcha"
                  data-sitekey="6LcBOqwrAAAAAILO9zqyU3D3mvZqLCnsE3CD3jkb"
-                 data-callback="onRecaptchaSuccess"
-                 data-expired-callback="onRecaptchaExpired">
+                 data-callback="onRecaptchaSuccess">
+                 <!-- 期限切れのコールバックは今回使いません -->
             </div>
-            <!-- ▲▲▲ reCAPTCHAウィジェットここまで ▲▲▲ -->
         </div>
 
-        <button id="submit-button" disabled>次へ進む</button>
+        <div id="message"></div>
     </div>
 
     <script>
-        // HTMLの要素を取得
-        const button = document.getElementById('submit-button');
+        // reCAPTCHAの認証に成功すると、Googleから'token'が渡されてこの関数が呼ばれる
+        function onRecaptchaSuccess(token) {
+            
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = '認証情報を確認しています...';
+            messageDiv.className = '';
 
-        // ↓↓↓ 認証後に移動させたいページのURL (変更なし) ↓↓↓
-        const nextPageUrl = 'https://kamakiri-server.f5.si/server-web/index.html';
-        
-        // reCAPTCHAの認証に成功したときに呼ばれる関数
-        function onRecaptchaSuccess() {
-            // ボタンを有効にする
-            button.disabled = false;
+            // 取得したトークンをサーバーのverify.phpに送信する
+            fetch('verify.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                // 'token=' というキーで、取得したtokenの値を送る
+                body: 'token=' + encodeURIComponent(token)
+            })
+            .then(response => response.json()) // サーバーからの返事をJSON形式で受け取る
+            .then(data => {
+                // サーバーからの返事(data)に応じた処理
+                if (data.success) {
+                    // 成功した場合
+                    messageDiv.textContent = '認証に成功しました。ページを移動します。';
+                    messageDiv.className = 'success';
+                    
+                    // サーバーから指定されたURLへ2秒後に移動
+                    setTimeout(function() {
+                        window.location.href = data.redirectUrl;
+                    }, 2000);
+
+                } else {
+                    // 失敗した場合
+                    messageDiv.textContent = '認証に失敗しました: ' + data.message;
+                    messageDiv.className = 'error';
+                    grecaptcha.reset(); // reCAPTCHAをリセットして再試行を促す
+                }
+            })
+            .catch(error => {
+                // 通信エラーなどが発生した場合
+                messageDiv.textContent = 'エラーが発生しました。時間をおいて再度お試しください。';
+                messageDiv.className = 'error';
+                grecaptcha.reset();
+            });
         }
-
-        // reCAPTCHAの認証が期限切れになったときに呼ばれる関数
-        function onRecaptchaExpired() {
-            // ボタンを再度無効にする
-            button.disabled = true;
-        }
-
-        // ボタンがクリックされたときの処理 (変更なし)
-        button.addEventListener('click', function() {
-            // 編集したURLのページに移動する
-            window.location.href = nextPageUrl;
-        });
     </script>
-
 </body>
 </html>
